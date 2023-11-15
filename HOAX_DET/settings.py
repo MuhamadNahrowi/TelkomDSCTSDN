@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-569n*n%xc6e=f-+%sqs3&568a!@e@-x)-t_s&tr$nm$q63w&ye
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['tsdn2023-1fec95d6e096.herokuapp.com' ]
+ALLOWED_HOSTS = ['tsdn2023-1fec95d6e096.herokuapp.com']
 
 
 # Application definition
@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'APPS'
 ]
 
 MIDDLEWARE = [
@@ -76,8 +77,12 @@ WSGI_APPLICATION = 'HOAX_DET.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'd2m346aofb18ou',
+        'USER': 'elohdfiuzkicdw',
+        'PASSWORD' : 'a17ef52a5574fd9befa1a27abd708f8ae9671dfabf7baaf7221aeeccb77deb48',
+        'HOST': 'ec2-44-206-204-65.compute-1.amazonaws.com',
+        'PORT': '5432',
     }
 }
 
@@ -111,6 +116,7 @@ TIME_ZONE = 'UTC'
 USE_I18N = True
 
 USE_TZ = True
+
 STATIC_ROOT = BASE_DIR / "staticfiles"
 STATIC_URL = "static/"
 # Static files (CSS, JavaScript, Images)

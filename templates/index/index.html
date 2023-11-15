@@ -1,4 +1,4 @@
-
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -9,6 +9,17 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 
     <style>
+        .page_loader {
+            position: fixed;
+            background: url('../../static/dist/img/loadingz.gif') 50% 50% no-repeat rgb(249, 249, 249);
+            left: 0px;
+            top: 0px;
+            width: 100%;
+            height: 100%;
+            z-index: 9999;
+            opacity: .5;
+        }
+
         a.active {
   border-bottom: 2px solid #55c57a;
 }
@@ -108,12 +119,11 @@ ul {
       <!-- Google Font: Source Sans Pro -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
     <!-- Font Awesome Icons -->
-    <link rel="stylesheet" href="plugins/fontawesome-free/css/all.min.css">
+    <link rel="stylesheet" href="{% static 'plugins/fontawesome-free/css/all.min.css'%}">
     <!-- IonIcons -->
     <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
     <!-- Theme style -->
-    <link rel="stylesheet" href="dist/css/adminlte.min.css">
-
+    <link rel="stylesheet" href="{% static 'dist/css/adminlte.min.css'%}">
 </head>
 <body>
     <div class="container">
@@ -148,7 +158,8 @@ ul {
                         <!-- small box -->
                         <div class="small-box bg-info">
                           <div class="inner">
-                            <h3>750</h3>
+                            <h3>{{ data_mart_total.1 }}</h3>
+            
                             <p>Total Data</p>
                           </div>
                           <div class="icon">
@@ -161,7 +172,8 @@ ul {
                         <!-- small box -->
                         <div class="small-box bg-success">
                           <div class="inner">
-                            <h3>53</h3>
+                            <h3>{{ data_mart_total.2 }}</h3>
+            
                             <p>HOAX</p>
                           </div>
                           <div class="icon">
@@ -174,7 +186,8 @@ ul {
                         <!-- small box -->
                         <div class="small-box bg-warning">
                           <div class="inner">
-                            <h3>44</h3>
+                            <h3>{{ data_mart_total.3 }}</h3>
+            
                             <p>Not HOAX</p>
                           </div>
                           <div class="icon">
@@ -187,7 +200,8 @@ ul {
                         <!-- small box -->
                         <div class="small-box bg-danger">
                           <div class="inner">
-                            <h3>65</h3>
+                            <h3>{{ data_mart_total.4 }}</h3>
+            
                             <p>Daily Data</p>
                           </div>
                           <div class="icon">
@@ -240,88 +254,7 @@ ul {
                                   <th>Indikasi Hoax</th>
                                 </tr>
                                 </thead>
-                                <tbody>
-                                <tr>
-                                  <td>
-                                    Some Product
-                                  </td>
-                                  <td>CNN</td>
-                                  <td>
-                                      50%
-                                  </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                      Some Product
-                                    </td>
-                                    <td>CNN</td>
-                                    <td>
-                                        50%
-                                    </td>
-                                  </tr>
-                                  <tr>
-                                    <td>
-                                      Some Product
-                                    </td>
-                                    <td>CNN</td>
-                                    <td>
-                                        50%
-                                    </td>
-                                  </tr>
-                                  <tr>
-                                    <td>
-                                      Some Product
-                                    </td>
-                                    <td>CNN</td>
-                                    <td>
-                                        50%
-                                    </td>
-                                  </tr>
-                                  <tr>
-                                    <td>
-                                      Some Product
-                                    </td>
-                                    <td>CNN</td>
-                                    <td>
-                                        50%
-                                    </td>
-                                  </tr>
-                                  <tr>
-                                    <td>
-                                      Some Product
-                                    </td>
-                                    <td>CNN</td>
-                                    <td>
-                                        50%
-                                    </td>
-                                  </tr>
-                                  <tr>
-                                    <td>
-                                      Some Product
-                                    </td>
-                                    <td>CNN</td>
-                                    <td>
-                                        50%
-                                    </td>
-                                  </tr>
-                                  <tr>
-                                    <td>
-                                      Some Product
-                                    </td>
-                                    <td>CNN</td>
-                                    <td>
-                                        50%
-                                    </td>
-                                  </tr>
-                                  <tr>
-                                    <td>
-                                      Some Product
-                                    </td>
-                                    <td>CNN</td>
-                                    <td>
-                                        50%
-                                    </td>
-                                  </tr>
+                                <tbody id="data_all_news">
                                 </tbody>
                               </table>
                             </div>
@@ -349,8 +282,8 @@ ul {
                                   <!-- /.col -->
                                   <div class="col-md-4">
                                     <ul class="chart-legend clearfix">
-                                      <li><i class="far fa-circle text-danger"></i>HOAX</li>
-                                      <li><i class="far fa-circle text-success"></i>NOT HOAX</li>
+                                      <li><i class="fa fa-solid fa-circle text-success"></i>HOAX</li>
+                                      <li><i class="fa fa-solid fa-circle text-warning"></i>NOT HOAX</li>
                                     </ul>
                                   </div>
                                   <!-- /.col -->
@@ -365,28 +298,12 @@ ul {
                             <div class="card">
                                 <div class="card-header">
                                   <h3 class="card-title">
-                                    Most 5 Tagline Hoaxker
+                                    5 keywords with the most hoax news
                                   </h3>
                                 </div>
                                 <!-- /.card-header -->
                                 <div class="card-body">
-                                  <ul class="todo-list" data-widget="todo-list">
-                                    <li>
-                                      <span class="text">Pemilu 2024</span>
-                                    </li>
-                                    
-                                    <li>
-                                        <span class="text">Pemilu 2024</span>
-                                    </li>
-                                    <li>
-                                        <span class="text">Pemilu 2024</span>
-                                    </li>
-                                    <li>
-                                        <span class="text">Pemilu 2024</span>
-                                    </li>
-                                    <li>
-                                        <span class="text">Pemilu 2024</span>
-                                    </li>
+                                  <ul class="todo-list" data-widget="todo-list" id="keyword_hoax">
                                     
                                         
                                   </ul>
@@ -414,6 +331,18 @@ ul {
                 </h2>
             </div>
 
+            <div class="form-group">
+              <label for="exampleFormControlTextarea1">News Content</label>
+              <textarea class="form-control" id="formNewsContent" rows="4" placeholder="Ketikkan Berita Yang Akan Diperiksa ......"></textarea>
+            </div>
+            <div class="form-group row">
+              <div class="col-sm-10">
+                <button type="submit" id="cekBerita" class="btn btn-primary">Submit</button>
+              </div>
+            </div>
+            <br>
+            <div id="hasilPenelusuran">
+            </div>
             <div>
 
             </div>
@@ -422,38 +351,183 @@ ul {
       </div>
     </div>
 
-
+    <div class="page_loader"></div>
 
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>    
     <!-- jQuery -->
-    <script src="plugins/jquery/jquery.min.js"></script>
+    <script src="{% static 'plugins/jquery/jquery.min.js' %}"></script>
     <!-- Bootstrap -->
-    <script src="plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="{% static 'plugins/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
     <!-- AdminLTE -->
-    <script src="dist/js/adminlte.js"></script>
+    <script src="{% static 'dist/js/adminlte.js'  %}"></script>
     <!-- OPTIONAL SCRIPTS -->
-    <script src="plugins/chart.js/Chart.min.js"></script>
-    <!-- AdminLTE for demo purposes -->
-    <!-- AdminLTE dashboard demo (This is only for demo purposes) -->
-    <script src="dist/js/pages/dashboard3.js"></script>
+    <script src="{% static 'plugins/chart.js/Chart.min.js' %}"></script>
 
     
 </body>
 </html>
 
 <script>
-    var pieChartCanvas = $('#pieChart').get(0).getContext('2d')
+  function loaderPage(stat) {
+    if (stat == true) {
+        $('.page_loader').show();
+    } else {
+        $('.page_loader').hide();
+    }
+  };
+
+  loaderPage(false);
+
+  var data_hoax = []
+  var data_nothoax = []
+  var data_date = []
+
+  var all_data_hoax = Number('{{data_mart_total.2}}')
+  var all_data_nothoax = Number('{{data_mart_total.3}}')
+
+  $(document).ready(function () {
+    loaderPage(true)
+    // Menggunakan Ajax untuk memanggil API
+    $.ajax({
+      url: 'getAllData',
+      type: 'GET',
+      success: function (data) {
+        // Mengonversi data menjadi JSON array
+        console.log(data)
+        data_hoax = data['data_hoax']
+        data_nothoax = data['data_nothoax']
+        data_date = data['data_date']
+
+        var maxs1 = Math.max(...data_hoax);
+        var maxs2 = Math.max(...data_nothoax);
+        
+        var maxs = maxs1 > maxs2 ? maxs1 : maxs2;
+        console.log(data_hoax, maxs2)
+
+        var $visitorsChart = $('#visitors-chart')
+
+        var mode = 'index'
+        var intersect = true
+
+        var ticksStyle = {
+          fontColor: '#495057',
+          fontStyle: 'bold'
+        }
+
+        var visitorsChart = new Chart($visitorsChart, {
+          data: {
+            labels: data_date,
+            datasets: [{
+              type: 'line',
+              data: data_hoax,
+              backgroundColor: 'transparent',
+              borderColor: '#007bff',
+              pointBorderColor: '#007bff',
+              pointBackgroundColor: '#007bff',
+              fill: false
+            },
+            {
+              type: 'line',
+              data: data_nothoax,
+              backgroundColor: 'tansparent',
+              borderColor: '#ced4da',
+              pointBorderColor: '#ced4da',
+              pointBackgroundColor: '#ced4da',
+              fill: false
+              // pointHoverBackgroundColor: '#ced4da',
+              // pointHoverBorderColor    : '#ced4da'
+            }]
+          },
+          options: {
+            maintainAspectRatio: false,
+            tooltips: {
+              mode: mode,
+              intersect: intersect
+            },
+            hover: {
+              mode: mode,
+              intersect: intersect
+            },
+            legend: {
+              display: false
+            },
+            scales: {
+              yAxes: [{
+                // display: false,
+                gridLines: {
+                  display: true,
+                  lineWidth: '4px',
+                  color: 'rgba(0, 0, 0, .2)',
+                  zeroLineColor: 'transparent'
+                },
+                ticks: $.extend({
+                  beginAtZero: true,
+                  suggestedMax: maxs
+                }, ticksStyle)
+              }],
+              xAxes: [{
+                display: true,
+                gridLines: {
+                  display: false
+                },
+                ticks: ticksStyle
+              }]
+            }
+          }
+        })
+
+        var data_all_news = data['data_all']
+        var data_html = ``
+
+        data_all_news.forEach(function (value) {
+          data_html += `<tr>
+                          <td><a href="` + value[4] + `" target="_blank" style="color: black;"><b>` + value[1] + `</b></a>
+                          </td>
+                          <td>` + value[2] + `
+                          </td>
+                          <td>` + value[3] + ` %
+                          </td>
+                        </tr>`
+        });
+
+        $('#data_all_news').html(data_html)
+
+        var keyword_hoaxker = data['keyword_hoaxker']
+
+        var keyword_html = ``
+
+        keyword_hoaxker.forEach(function (value) {
+          keyword_html += `<li>
+                            <span class="text">`+ value[0] +` | ` + value[1] + `</span>
+                          </li>
+                          `
+        });
+
+        $('#keyword_hoax').html(keyword_html)
+
+        loaderPage(false)
+
+      },
+      error: function (error) {
+        loaderPage(false)
+        alert('There has been a problem with your ajax operation:', error);
+      }
+    });
+  });
+
+
+  var pieChartCanvas = $('#pieChart').get(0).getContext('2d')
   var pieData = {
     labels: [
-      'HOAX',
-      'NOT HOAX',
+    'NOT HOAX',
+    'HOAX',
     ],
     datasets: [
       {
-        data: [700, 500],
-        backgroundColor: ['#f56954', '#00a65a']
+        data: [all_data_nothoax, all_data_hoax],
+        backgroundColor: ['#ffc107', '#00a65a']
       }
     ]
   }
@@ -470,4 +544,51 @@ ul {
     data: pieData,
     options: pieOptions
   })
+
+  $("#cekBerita").on("click", function () {
+    loaderPage(true)
+    // Menggunakan Ajax untuk memanggil API
+    $.ajax({
+      url: 'checkNewsData',
+      data: {'news':$("#formNewsContent").val()},
+      type: 'GET',
+      success: function (data) {
+
+        var res_html = `
+                      <div class="card" style="border: 3px solid black;">
+                        <div class="card-header border-0">
+                          <h3 class="card-title">Hasil Penelusuran</h3>
+                          <div class="card-tools">
+                          </div>
+                        </div>
+                        <div class="card-body table-responsive p-0">
+                          <div style="margin: 20px;">
+                            <h6>
+                              Berdasarkan hasil penelusuran kami, disimpulkan bahwa Berita ini memiliki tingkat probabilitas hoaks sebesar <b>`+ data['probability_hoax'] +` %</b> dan tingkat probabilitas bukan sebagai berita Hoaks sebesar <b>`+ data['probability_not_hoax'] +` %</b>
+                            </h6>
+                            <h6>
+                              Sehingga disimpulkan bahwa berita tersebut merupakan <b>`+ data['simpulan'] +`</b>
+                            </h6>
+                            
+                          </div>
+                        </div>
+                      </div>
+                        `
+        
+        $('#hasilPenelusuran').html(res_html)
+
+
+        console.log(data)
+        loaderPage(false)
+
+      },
+      error: function (error) {
+        loaderPage(false)
+        alert('There has been a problem with your ajax operation:', error);
+      }
+
+    });
+  });
+
+  
 </script>

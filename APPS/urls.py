@@ -5,5 +5,7 @@ from . import views
 
 app_name = 'apps'
 urlpatterns = [
-    path('', views.dashboard, name='dashboard')   
+    path('', views.dashboard, name='dashboard'),
+    path('getAllData', views.getAllData, name='getAllData'),
+    path('checkNewsData', views.checkNewsData, name='checkNewsData')
 ]
