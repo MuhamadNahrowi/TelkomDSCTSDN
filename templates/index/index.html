@@ -577,48 +577,58 @@ ul {
   })
 
   $("#cekBerita").on("click", function () {
-    loaderPage(true)
+    if ($("#formNewsContent").val() != ''){
+      loaderPage(true)
     // Menggunakan Ajax untuk memanggil API
-    $.ajax({
-      url: 'checkNewsData',
-      data: {'news':$("#formNewsContent").val()},
-      type: 'GET',
-      success: function (data) {
+      $.ajax({
+        url: 'checkNewsData',
+        data: {'news':$("#formNewsContent").val()},
+        type: 'GET',
+        success: function (data) {
 
-        var res_html = `
-                      <div class="card" style="border: 3px solid black;">
-                        <div class="card-header border-0">
-                          <h3 class="card-title">Hasil Penelusuran</h3>
-                          <div class="card-tools">
+          var res_html = `
+                        <div class="card" style="border: 3px solid black;">
+                          <div class="card-header border-0">
+                            <h3 class="card-title">Hasil Penelusuran</h3>
+                            <div class="card-tools">
+                            </div>
+                          </div>
+                          <div class="card-body table-responsive p-0">
+                            <div style="margin: 20px;">
+                              <h6>
+                                `+ $("#formNewsContent").val() +`
+                              </h6>
+                              </br>
+                              <h6>
+                                Berdasarkan hasil penelusuran kami, disimpulkan bahwa Berita ini memiliki tingkat probabilitas hoaks sebesar <b>`+ data['probability_hoax'] +` %</b> dan tingkat probabilitas bukan sebagai berita Hoaks sebesar <b>`+ data['probability_not_hoax'] +` %</b>
+                              </h6>
+                              <h6>
+                                Sehingga disimpulkan bahwa berita tersebut merupakan <b>`+ data['simpulan'] +`</b>
+                              </h6>
+                              
+                            </div>
                           </div>
                         </div>
-                        <div class="card-body table-responsive p-0">
-                          <div style="margin: 20px;">
-                            <h6>
-                              Berdasarkan hasil penelusuran kami, disimpulkan bahwa Berita ini memiliki tingkat probabilitas hoaks sebesar <b>`+ data['probability_hoax'] +` %</b> dan tingkat probabilitas bukan sebagai berita Hoaks sebesar <b>`+ data['probability_not_hoax'] +` %</b>
-                            </h6>
-                            <h6>
-                              Sehingga disimpulkan bahwa berita tersebut merupakan <b>`+ data['simpulan'] +`</b>
-                            </h6>
-                            
-                          </div>
-                        </div>
-                      </div>
-                        `
-        
-        $('#hasilPenelusuran').html(res_html)
+                          `
+          
+          $('#hasilPenelusuran').html(res_html)
 
 
-        console.log(data)
-        loaderPage(false)
+          console.log(data)
+          loaderPage(false)
 
-      },
-      error: function (error) {
-        loaderPage(false)
-        alert('There has been a problem with your ajax operation:', error);
-      }
+        },
+        error: function (error) {
+          loaderPage(false)
+          alert('There has been a problem with your ajax operation:', error);
+        }
 
-    });
+      });
+    } else {
+      alert('Konten tidak boleh kosong')
+    }
+
+
   });
 
   $.ajax({
