@@ -296,19 +296,46 @@ ul {
                             <!-- /.card -->
                 
                             <div class="card">
-                                <div class="card-header">
-                                  <h3 class="card-title">
-                                    5 keywords with the most hoax news
-                                  </h3>
-                                </div>
-                                <!-- /.card-header -->
-                                <div class="card-body">
-                                  <ul class="todo-list" data-widget="todo-list" id="keyword_hoax">
-                                    
-                                        
-                                  </ul>
-                                </div>
+                              <div class="card-header">
+                                <h3 class="card-title">
+                                  5 keywords with the most hoax news
+                                </h3>
                               </div>
+                              <!-- /.card-header -->
+                              <div class="card-body">
+                                <ul class="todo-list" data-widget="todo-list" id="keyword_hoax">
+                                  
+                                      
+                                </ul>
+                              </div>
+                            </div>
+
+                            <div class="card">
+                              <div class="card-header">
+                                <h3 class="card-title">
+                                  wordCloud Berita Hoax
+                                </h3>
+                              </div>
+                              <!-- /.card-header -->
+                              <div class="card-body">
+                                  
+                                  <div id="cloud_hoax"></div>
+                              </div>
+                            </div>
+
+                            <div class="card">
+                              <div class="card-header">
+                                <h3 class="card-title">
+                                  wordCloud Bukan Berita Hoax
+                                </h3>
+                              </div>
+                              <!-- /.card-header -->
+                              <div class="card-body">
+                                  
+                                  <div id="cloud_nothoax"></div>
+                              </div>
+                            </div>
+
                   
                                               <!-- /.card -->
                       </div>
@@ -364,8 +391,12 @@ ul {
     <script src="{% static 'dist/js/adminlte.js'  %}"></script>
     <!-- OPTIONAL SCRIPTS -->
     <script src="{% static 'plugins/chart.js/Chart.min.js' %}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.4.11/d3.min.js"></script>
+    <script src="https://cdn.rawgit.com/jasondavies/d3-cloud/v1.2.1/build/d3.layout.cloud.js"></script>
 
-    
+
+
+
 </body>
 </html>
 
@@ -540,7 +571,7 @@ ul {
   // You can switch between pie and douhnut using the method below.
   // eslint-disable-next-line no-unused-vars
   var pieChart = new Chart(pieChartCanvas, {
-    type: 'doughnut',
+    type: 'pie',
     data: pieData,
     options: pieOptions
   })
@@ -590,5 +621,140 @@ ul {
     });
   });
 
-  
+  $.ajax({
+      url: 'getDataWord',
+      type: 'GET',
+      success: function (data) {
+        var word_hoax = data['word_hoax']
+        var word_nothoax = data['word_nothoax']
+        
+        var skillsToDraw1 = []
+
+        word_hoax.forEach(function (value) {
+          skillsToDraw1.push({text : value[0], size : value[1]});
+        });
+        var skillsToDraw2 = []
+
+        word_nothoax.forEach(function (value) {
+          skillsToDraw2.push({text : value[0], size : value[1]});
+        });
+        var width = 500;
+        var height = 500;
+        var fill = d3.scale.category20();
+
+        d3.layout.cloud()
+          .size([width, height])
+          .words(skillsToDraw1)
+          .rotate(function() {
+            return ~~(Math.random() * 2) * 90;
+          })
+          .font("Impact")
+          .fontSize(function(d) {
+            return d.size;
+          })
+          .on("end", drawSkillCloud1)
+          .start();
+
+    // Finally implement `drawSkillCloud`, which performs the D3 drawing:
+
+        // apply D3.js drawing API
+        function drawSkillCloud1(words) {
+          d3.select("#cloud_hoax").append("svg")
+            // .attr("width", width)
+            // .attr("height", height)
+            .append("g")
+            // .attr("transform", "translate(" + ~~(width / 2) + "," + ~~(height / 2) + ")")
+            .selectAll("text")
+            .data(words)
+            .enter().append("text")
+            .style("font-size", function(d) {
+              return d.size + "px";
+            })
+            .style("-webkit-touch-callout", "none")
+            .style("-webkit-user-select", "none")
+            .style("-khtml-user-select", "none")
+            .style("-moz-user-select", "none")
+            .style("-ms-user-select", "none")
+            .style("user-select", "none")
+            .style("cursor", "default")
+            .style("font-family", "Impact")
+            .style("fill", function(d, i) {
+              return fill(i);
+            })
+            .attr("text-anchor", "middle")
+            .attr("transform", function(d) {
+              return "translate(" + [d.x, d.y] + ")rotate(" + d.rotate + ")";
+            })
+            .text(function(d) {
+              return d.text;
+            });
+        }
+
+    // optional: set the viewbox to content bounding box (zooming in on the content, effectively trimming whitespace)
+
+        var svg1 = document.getElementsByTagName("svg")[0];
+        var bbox1 = svg1.getBBox();
+        var viewBox1 = [bbox1.x, bbox1.y, bbox1.width, bbox1.height].join(" ");
+        svg1.setAttribute("viewBox", viewBox1);
+
+
+
+        d3.layout.cloud()
+          .size([width, height])
+          .words(skillsToDraw2)
+          .rotate(function() {
+            return ~~(Math.random() * 2) * 90;
+          })
+          .font("Impact")
+          .fontSize(function(d) {
+            return d.size;
+          })
+          .on("end", drawSkillCloud2)
+          .start();
+
+    // Finally implement `drawSkillCloud`, which performs the D3 drawing:
+
+        // apply D3.js drawing API
+        function drawSkillCloud2(words) {
+          d3.select("#cloud_nothoax").append("svg")
+            // .attr("width", width)
+            // .attr("height", height)
+            .append("g")
+            // .attr("transform", "translate(" + ~~(width / 2) + "," + ~~(height / 2) + ")")
+            .selectAll("text")
+            .data(words)
+            .enter().append("text")
+            .style("font-size", function(d) {
+              return d.size + "px";
+            })
+            .style("-webkit-touch-callout", "none")
+            .style("-webkit-user-select", "none")
+            .style("-khtml-user-select", "none")
+            .style("-moz-user-select", "none")
+            .style("-ms-user-select", "none")
+            .style("user-select", "none")
+            .style("cursor", "default")
+            .style("font-family", "Impact")
+            .style("fill", function(d, i) {
+              return fill(i);
+            })
+            .attr("text-anchor", "middle")
+            .attr("transform", function(d) {
+              return "translate(" + [d.x, d.y] + ")rotate(" + d.rotate + ")";
+            })
+            .text(function(d) {
+              return d.text;
+            });
+        }
+        var svg2 = document.getElementsByTagName("svg")[1];
+        var bbox2 = svg2.getBBox();
+        var viewBox2 = [bbox2.x, bbox2.y, bbox2.width, bbox2.height].join(" ");
+        svg2.setAttribute("viewBox", viewBox1);
+
+      },
+      error: function (error) {
+        loaderPage(false)
+        alert('There has been a problem with your ajax operation:', error);
+      }
+    });
 </script>

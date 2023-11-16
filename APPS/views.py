@@ -50,6 +50,26 @@ def getAllData(request):
 
     return JsonResponse(context)
 
+def getDataWord(request):
+    with conn.cursor() as get_mart_word:
+        get_mart_word.execute('SELECT word, freq, status FROM data_mart_wordcloud ORDER BY freq DESC')
+        get_mart_word = get_mart_word.fetchall()
+
+    word_hoax = []
+    word_nothoax = []
+    for mw in get_mart_word:
+        if mw[2] == 'hoax':
+            word_hoax.append(mw)
+        else:
+            word_nothoax.append(mw)
+
+    context = {
+        'word_hoax': word_hoax,
+        'word_nothoax':word_nothoax
+    }
+
+    return JsonResponse(context)
+
 import joblib
 import nltk
 from nltk.corpus import stopwords

@@ -7,5 +7,7 @@ app_name = 'apps'
 urlpatterns = [
     path('', views.dashboard, name='dashboard'),
     path('getAllData', views.getAllData, name='getAllData'),
-    path('checkNewsData', views.checkNewsData, name='checkNewsData')
+    path('getDataWord', views.getDataWord, name='getDataWord'),
+    path('checkNewsData', views.checkNewsData, name='checkNewsData'),
+
 ]
