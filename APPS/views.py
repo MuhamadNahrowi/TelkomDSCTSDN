@@ -3,7 +3,9 @@ from django.db import connection as conn
 from django.http import JsonResponse
 
 # Create your views here.
+# function fro create dashboard
 def dashboard(request):
+    # getting mart data
     with conn.cursor() as get_mart_total:
         get_mart_total.execute('SELECT id, total_data, total_data_hoax, total_data_not_hoax, total_data_daily FROM data_mart_total where id = 0')
         get_mart_total = get_mart_total.fetchall()
@@ -14,24 +16,27 @@ def dashboard(request):
 
     return render(request, 'index/index.html', context)
 
+# api function for get all data (daily, all data hoax, etc)
 def getAllData(request):
+    # get data daily from db
     with conn.cursor() as get_mart_daily:
         get_mart_daily.execute('SELECT id, CAST(date AS TEXT), hoax, not_hoax FROM data_mart_daily ORDER BY date DESC LIMIT 7')
         get_mart_daily = get_mart_daily.fetchall()
 
+    # get 10 new data
     with conn.cursor() as get_all_data:
         get_all_data.execute('SELECT id, title, source, ROUND( indikasi::numeric, 2 ), url FROM data ORDER BY publishedat DESC LIMIT 10')
         get_all_data = get_all_data.fetchall()
 
+    # get most 5 keyword hoax
     with conn.cursor() as get_5_data_hoax:
         get_5_data_hoax.execute('SELECT keyword, hoax FROM data_mart_hoaxker ORDER BY hoax DESC LIMIT 5')
         get_5_data_hoax = get_5_data_hoax.fetchall()
 
-    
-
     data_date = []
     data_hoax = []
     data_nothoax = []
+    # loop for setting data
     for d in range(len(get_mart_daily)):
         d += 1
 
@@ -50,13 +55,16 @@ def getAllData(request):
 
     return JsonResponse(context)
 
+# api function to get data wordcloud
 def getDataWord(request):
+    # get data wordcloud from db
     with conn.cursor() as get_mart_word:
         get_mart_word.execute('SELECT word, freq, status FROM data_mart_wordcloud ORDER BY freq DESC')
         get_mart_word = get_mart_word.fetchall()
 
     word_hoax = []
     word_nothoax = []
+    # setting data wordcloud
     for mw in get_mart_word:
         if mw[2] == 'hoax':
             word_hoax.append(mw)
@@ -70,12 +78,13 @@ def getDataWord(request):
 
     return JsonResponse(context)
 
+# Expert System For HOAX Detector
+# library for hoax detection
 import joblib
 import nltk
 from nltk.corpus import stopwords
 import re
-# Function to predict new text
-# Download Indonesian stopwords
+
 nltk.download('stopwords')
 
 # # Get Indonesian stopwords
@@ -123,13 +132,14 @@ def predict_hoax(new_text):
     
     return probability_not_hoax, probability_hoax
 
-
+# api function for hoax detection
 def checkNewsData(request):
     data_news = request.GET.get("news")
     not_hoax_prob, hoax_prob = predict_hoax(data_news)
     not_hoax_prob = not_hoax_prob*100
     hoax_prob = hoax_prob*100
     
+    # condition for conclusion
     if not_hoax_prob >= hoax_prob:
         simpulan = 'BUKAN BERITA HOAKS'
     else:
