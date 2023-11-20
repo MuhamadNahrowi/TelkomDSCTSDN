@@ -56,7 +56,7 @@ def predict_hoax(new_text):
 import datetime
 
 start = 1
-end = 2
+end = 5
 
 # reference date
 date_to = str(datetime.datetime.now() - datetime.timedelta(days=start)).split(' ')[0]
@@ -110,13 +110,11 @@ for keyword in all_key:
 sql_insert_data = sql_insert_data[:-1] + ";"
 
 # inisialisasi db connection
-conn = psycopg2.connect(
-                    user="elohdfiuzkicdw",
-                    password="a17ef52a5574fd9befa1a27abd708f8ae9671dfabf7baaf7221aeeccb77deb48",
-                    host="ec2-44-206-204-65.compute-1.amazonaws.com",
-                    port="5432",
-                    database="d2m346aofb18ou"
-                      )
+conn = psycopg2.connect(user="elohdfiuzkicdw",
+                      password="a17ef52a5574fd9befa1a27abd708f8ae9671dfabf7baaf7221aeeccb77deb48",
+                      host="ec2-44-206-204-65.compute-1.amazonaws.com",
+                      port="5432",
+                      database="d2m346aofb18ou")
 
 # process delete old data and change to new data
 # mart daily
@@ -146,11 +144,17 @@ with conn.cursor() as get_data_nothoax:
 # processing result data
 hoax_text = ""
 for w in get_data_hoax:
-    hoax_text += preprocess_text(w[0])
+    t = w[0]
+    if t.find(' – ') != -1:
+        t = t.split(' – ')[1]
+    hoax_text += preprocess_text(t)
     
 nothoax_text = ""
 for w in get_data_nothoax:
-    nothoax_text += preprocess_text(w[0])
+    t = w[0]
+    if t.find(' – ') != -1:
+        t = t.split(' – ')[1]
+    nothoax_text += preprocess_text(t)
 
 # generating wordcloud
 cloud_hoax = WordCloud(collocations = False, scale=50).generate(hoax_text).words_
@@ -159,10 +163,10 @@ cloud_nothoax = WordCloud(collocations = False, scale=50).generate(nothoax_text)
 # inisialisasi inserting into db mart wordcloud
 sql_insert_wordcloud = "TRUNCATE TABLE data_mart_wordcloud;INSERT INTO data_mart_wordcloud (word, freq, status) values "
 for ch in cloud_hoax:
-    sql_insert_wordcloud += f"('{ch}', {cloud_hoax[ch]}, 'hoax'),"
+    sql_insert_wordcloud += f"('{ch}', {cloud_hoax[ch]*50}, 'hoax'),"
     
 for ch in cloud_nothoax:
-    sql_insert_wordcloud += f"('{ch}', {cloud_nothoax[ch]}, 'hoax'),"
+    sql_insert_wordcloud += f"('{ch}', {cloud_nothoax[ch]*50}, 'not hoax'),"
 
 sql_insert_wordcloud = sql_insert_wordcloud[:-1] + ";"
 
