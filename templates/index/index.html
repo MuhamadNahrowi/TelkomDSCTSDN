@@ -213,7 +213,7 @@
                     <div class="card">
                       <div class="card-header border-0">
                         <div class="d-flex justify-content-between">
-                          <h3 class="card-title">Daily Monitoring</h3>
+                          <h3 class="card-title">Last 7 Days Monitoring</h3>
                         </div>
                       </div>
                       <div class="card-body">
@@ -741,7 +741,7 @@
         var svg2 = document.getElementsByTagName("svg")[1];
         var bbox2 = svg2.getBBox();
         var viewBox2 = [bbox2.x, bbox2.y, bbox2.width, bbox2.height].join(" ");
-        svg2.setAttribute("viewBox", viewBox1);
+        svg2.setAttribute("viewBox", viewBox2);
 
       },
       error: function (error) {
