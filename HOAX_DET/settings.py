@@ -78,10 +78,10 @@ WSGI_APPLICATION = 'HOAX_DET.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'd2m346aofb18ou',
-        'USER': 'elohdfiuzkicdw',
-        'PASSWORD' : 'a17ef52a5574fd9befa1a27abd708f8ae9671dfabf7baaf7221aeeccb77deb48',
-        'HOST': 'ec2-44-206-204-65.compute-1.amazonaws.com',
+        'NAME': 'dfctqvia45gflq',
+        'USER': 'mpeglhwafggkoj',
+        'PASSWORD' : '2aae9561c94ce9b864690bae5ce44174ab4385adf201a18d5b787d6d4312e5c6',
+        'HOST': 'ec2-3-212-29-93.compute-1.amazonaws.com',
         'PORT': '5432',
     }
 }
