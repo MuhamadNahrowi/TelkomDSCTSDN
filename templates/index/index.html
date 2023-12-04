@@ -111,6 +111,9 @@
         .addinfo {
           padding: 0 1rem;
         }
+        .writing_error {
+          color: #872341;
+        }
 
     </style>
 
@@ -352,8 +355,12 @@
 
           <div class="form-group">
             <label for="exampleFormControlTextarea1">News Content</label>
-            <textarea class="form-control" id="formNewsContent" rows="4" placeholder="Ketikkan Berita Yang Akan Diperiksa ......"></textarea>
+            <!--<textarea class="form-control" id="formNewsContent" rows="4" placeholder="Ketikkan Berita Yang Akan Diperiksa ......"></textarea>-->
+            <textarea class="form-control" id="formNewsContent" name=writ word-limit="true" max-words="214" min-words="26" rows="4" placeholder="Ketikkan Berita Yang Akan Diperiksa ......"></textarea>
+            <div class="writing_error"></div>
+            <div class="word_counter"></div>
           </div>
+
           <div class="form-group row">
             <div class="col-sm-10">
               <button type="submit" id="cekBerita" class="btn btn-primary">Submit</button>
@@ -557,61 +564,101 @@
     options: pieOptions
   })
 
+  var wordCount;
   // hoax detection
-  $("#cekBerita").on("click", function () {
-    if ($("#formNewsContent").val() != ''){
-      loaderPage(true)
-      // Using Ajax for call api Expert system
-      $.ajax({
-        url: 'checkNewsData',
-        data: {'news':$("#formNewsContent").val()},
-        type: 'GET',
-        success: function (data) {
-          // result of detection
-          var res_html = `
-                        <div class="card" style="border: 3px solid black;">
-                          <div class="card-header border-0">
-                            <h3 class="card-title">Hasil Penelusuran</h3>
-                            <div class="card-tools">
-                            </div>
-                          </div>
-                          <div class="card-body table-responsive p-0">
-                            <div style="margin: 20px;">
-                              <h6>
-                                `+ $("#formNewsContent").val() +`
-                              </h6>
-                              </br>
-                              <h6>
-                                Berdasarkan hasil penelusuran kami, disimpulkan bahwa Berita ini memiliki tingkat probabilitas hoaks sebesar <b>`+ data['probability_hoax'] +` %</b> dan tingkat probabilitas bukan sebagai berita Hoaks sebesar <b>`+ data['probability_not_hoax'] +` %</b>
-                              </h6>
-                              <h6>
-                                Sehingga disimpulkan bahwa berita tersebut merupakan <b>`+ data['simpulan'] +`</b>
-                              </h6>
-                              
-                            </div>
-                          </div>
-                        </div>
-                          `
+  
+  $(document).on("input", "textarea[word-limit=true]", function() {
+    // Get individual limits
+      thisMin = parseInt($(this).attr("min-words"));
+      thisMax = parseInt($(this).attr("max-words"));
+
+      // Create array of words, skipping the blanks
+      var removedBlanks = [];
+      removedBlanks = $(this).val().split(/\s+/).filter(Boolean);
+      
+      // Get word count
+      wordCount = removedBlanks.length;
+     
+      // Remove extra words from string if over word limit
+      if (wordCount > thisMax) {
+            
+          // Trim string, use slice to get the first 'n' values
+          var trimmed = removedBlanks.slice(0, thisMax ).join(" ");
           
-          $('#hasilPenelusuran').html(res_html)
-
-
-          console.log(data)
-          loaderPage(false)
-
-        },
-        error: function (error) {
-          loaderPage(false)
-          alert('There has been a problem with your ajax operation:', error);
+          // Add space to ensure further typing attempts to add a new word (rather than adding to penultimate word)
+          $(this).val(trimmed + " ");
+          
         }
-
-      });
-    } else {
-      alert('Konten tidak boleh kosong')
-    }
-
-
+      // Compare word count to limits and print message as appropriate
   });
+
+  $("#cekBerita").on("click", function () {
+      if ( wordCount < thisMin) {
+        $('#hasilPenelusuran').html("")
+        $(".writing_error").text("Minimum jumlah kata yang diperlukan untuk analisis sebanyak " + thisMin + " kata.");
+        $(".word_counter").text("Jumlah kata terdeteksi: "+ wordCount+ " kata.");
+      
+      } else if (wordCount > thisMax) {
+        $('#hasilPenelusuran').html("")
+        $(".writing_error").text("Maksimum jumlah kata yang diperlukan untuk analisis sebanyak " + thisMax + " kata.");
+        $(".word_counter").text("Jumlah kata terdeteksi: "+ wordCount+ " kata.");
+      
+      } else {
+          $(".writing_error").text("");
+           $(".word_counter").text("Jumlah Kata Terdeteksi: "+ wordCount+ " kata.");
+          if ($("#formNewsContent").val() != ''){
+            loaderPage(true)
+            // Using Ajax for call api Expert system
+            $.ajax({
+              url: 'checkNewsData',
+              data: {'news':$("#formNewsContent").val()},
+              type: 'GET',
+              success: function (data) {
+                // result of detection
+                var res_html = `
+                              <div class="card" style="border: 3px solid black;">
+                                <div class="card-header border-0">
+                                  <h3 class="card-title">Hasil Penelusuran</h3>
+                                  <div class="card-tools">
+                                  </div>
+                                </div>
+                                <div class="card-body table-responsive p-0">
+                                  <div style="margin: 20px;">
+                                    <h6>
+                                      `+ $("#formNewsContent").val() +`
+                                    </h6>
+                                    </br>
+                                    <h6>
+                                      Berdasarkan hasil penelusuran kami, disimpulkan bahwa Berita ini memiliki tingkat probabilitas hoaks sebesar <b>`+ data['probability_hoax'] +` %</b> dan tingkat probabilitas bukan sebagai berita Hoaks sebesar <b>`+ data['probability_not_hoax'] +` %</b>
+                                    </h6>
+                                    <h6>
+                                      Sehingga disimpulkan bahwa berita tersebut merupakan <b>`+ data['simpulan'] +`</b>
+                                    </h6>
+                                    
+                                  </div>
+                                </div>
+                              </div>
+                                `
+                
+                $('#hasilPenelusuran').html(res_html)
+
+
+                console.log(data)
+                loaderPage(false)
+
+              },
+              error: function (error) {
+                loaderPage(false)
+                alert('There has been a problem with your ajax operation:', error);
+              }
+
+            });
+          } else {
+            alert('Konten tidak boleh kosong')
+          }
+          $(this).parent().children(".writing_error").text("");
+    }
+     });
 
   // Using Ajax for get wordcloud
   $.ajax({
