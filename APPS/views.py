@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from django.db import connection as conn
 from django.http import JsonResponse
+import datetime
 
 # Create your views here.
 # function fro create dashboard
@@ -43,6 +44,10 @@ def getAllData(request):
         data_date.append(get_mart_daily[len(get_mart_daily)-d][1])
         data_hoax.append(get_mart_daily[len(get_mart_daily)-d][2])
         data_nothoax.append(get_mart_daily[len(get_mart_daily)-d][3])
+
+    # current_date = datetime.datetime.now()
+    # d = timedelta(days = 7)
+
 
     context = {
         'data_mart_daily': get_mart_daily,
@@ -149,5 +154,55 @@ def checkNewsData(request):
         'probability_not_hoax' : round(not_hoax_prob, 2),
         'probability_hoax' : round(hoax_prob, 2),
         'simpulan': simpulan
+    }
+    return JsonResponse(context)
+
+
+def checkDataAgregation(request):
+    status = request.GET.get("status")
+    if status == 'hoax':
+        q_where = 'WHERE indikasi > 50 order by indikasi desc'
+    elif status == 'not_hoax':
+        q_where = 'WHERE indikasi <= 50 order by indikasi asc'
+    elif status == 'daily':
+        q_where = 'WHERE publishedat = (select publishedat from data order by publishedat desc limit 1)'
+    else:
+        q_where = 'order by publishedat desc'
+
+    sql = 'select source, author, title, url, publishedat, indikasi from data '+q_where
+
+
+    with conn.cursor() as get_data:
+        get_data.execute(sql)
+        get_data = get_data.fetchall()
+
+    context = {
+        'data' : get_data,
+    }
+    return JsonResponse(context)
+
+def getDailyMonitoring(request):
+    start = request.GET.get("start")
+    end = request.GET.get("end")
+
+    with conn.cursor() as get_mart_daily:
+        get_mart_daily.execute(f"SELECT id, CAST(date AS TEXT), hoax, not_hoax FROM data_mart_daily where date between '{start}' AND '{end}' ORDER BY date DESC")
+        get_mart_daily = get_mart_daily.fetchall()
+
+    data_date = []
+    data_hoax = []
+    data_nothoax = []
+    # loop for setting data
+    for d in range(len(get_mart_daily)):
+        d += 1
+
+        data_date.append(get_mart_daily[len(get_mart_daily)-d][1])
+        data_hoax.append(get_mart_daily[len(get_mart_daily)-d][2])
+        data_nothoax.append(get_mart_daily[len(get_mart_daily)-d][3])
+
+    context = {
+        'data_date' : data_date,
+        'data_hoax' : data_hoax,
+        'data_nothoax' : data_nothoax
     }
     return JsonResponse(context)

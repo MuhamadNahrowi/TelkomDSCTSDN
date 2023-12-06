@@ -9,5 +9,7 @@ urlpatterns = [
     path('getAllData', views.getAllData, name='getAllData'),
     path('getDataWord', views.getDataWord, name='getDataWord'),
     path('checkNewsData', views.checkNewsData, name='checkNewsData'),
+    path('checkDataAgregation', views.checkDataAgregation, name='checkDataAgregation'),
+    path('getDailyMonitoring', views.getDailyMonitoring, name='getDailyMonitoring')
 
 ]
