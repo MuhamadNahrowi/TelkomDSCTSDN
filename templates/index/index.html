@@ -664,16 +664,7 @@
       // Get word count
       wordCount = removedBlanks.length;
      
-      // Remove extra words from string if over word limit
-      if (wordCount > thisMax) {
-            
-          // Trim string, use slice to get the first 'n' values
-          var trimmed = removedBlanks.slice(0, thisMax ).join(" ");
-          
-          // Add space to ensure further typing attempts to add a new word (rather than adding to penultimate word)
-          $(this).val(trimmed + " ");
-          
-        }
+      
       // Compare word count to limits and print message as appropriate
   });
 
