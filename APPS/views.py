@@ -161,7 +161,7 @@ def checkNewsData(request):
 def checkDataAgregation(request):
     status = request.GET.get("status")
     if status == 'hoax':
-        q_where = 'WHERE indikasi > 50 order by indikasi desc'
+        q_where = 'WHERE indikasi > 50 and display = 0 order by indikasi desc'
     elif status == 'not_hoax':
         q_where = 'WHERE indikasi <= 50 order by indikasi asc'
     elif status == 'daily':
